@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TransactionServiceImpl {
+public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final ModelMapper modelMapper;
@@ -26,6 +26,7 @@ public class TransactionServiceImpl {
         this.modelMapper = modelMapper;
     }
 
+    @Override
     public Page<TransactionDTO> getTransactions(final Pageable pageable) {
         final Page<Transaction> transactions = transactionRepository.findAll(pageable);
         return new PageImpl<>(
@@ -35,10 +36,12 @@ public class TransactionServiceImpl {
         );
     }
 
-    public void verifyTransaction(String hash) {
-       final Optional<Transaction> transactionOptional = transactionRepository.findByHash(hash);
-       if (!transactionOptional.isPresent()) {
-           throw new ResourceNotFoundException();
-       }
+    @Override
+    public Transaction getTransactionBy(String hash) {
+        final Optional<Transaction> transactionOptional = transactionRepository.findByHash(hash);
+        if (transactionOptional.isPresent()) {
+            return transactionOptional.get();
+        }
+        throw new ResourceNotFoundException();
     }
 }

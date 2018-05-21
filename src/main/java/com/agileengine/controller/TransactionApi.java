@@ -1,7 +1,8 @@
 package com.agileengine.controller;
 
 import com.agileengine.dto.out.TransactionDTO;
-import com.agileengine.service.TransactionServiceImpl;
+import com.agileengine.model.Transaction;
+import com.agileengine.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +18,10 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping("/api")
 public class TransactionApi {
 
-    private final TransactionServiceImpl transactionService;
+    private final TransactionService transactionService;
 
     @Autowired
-    public TransactionApi(final TransactionServiceImpl transactionService) {
+    public TransactionApi(final TransactionService transactionService) {
         this.transactionService = transactionService;
     }
 
@@ -36,12 +37,12 @@ public class TransactionApi {
             path = "/v1/transactions/{hash}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public void verifyTransaction(
+    public Transaction verifyTransaction(
 
             @PathVariable
             @NotBlank
             final String hash
     ) {
-        transactionService.verifyTransaction(hash);
+        return transactionService.getTransactionBy(hash);
     }
 }
