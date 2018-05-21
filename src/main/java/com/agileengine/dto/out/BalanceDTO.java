@@ -1,10 +1,12 @@
-package com.agileengine.dto;
+package com.agileengine.dto.out;
 
-public class AccountDTO {
+public class BalanceDTO {
 
     private Long id;
 
     private Long money;
+
+    private Integer version;
 
     public Long getId() {
         return id;
@@ -20,5 +22,13 @@ public class AccountDTO {
 
     public void setMoney(Long money) {
         this.money = money;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

@@ -1,7 +1,8 @@
-package com.agileengine.dto;
+package com.agileengine.dto.out;
 
-import com.agileengine.model.Account;
 import com.agileengine.model.TransactionType;
+
+import java.util.Date;
 
 public class TransactionDTO {
 
@@ -11,7 +12,9 @@ public class TransactionDTO {
 
     private Long amount;
 
-    private Long accountId;
+    private Long walletId;
+
+    private Date created;
 
     public Long getId() {
         return id;
@@ -37,11 +40,19 @@ public class TransactionDTO {
         this.amount = amount;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getWalletId() {
+        return walletId;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setWalletId(Long walletId) {
+        this.walletId = walletId;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

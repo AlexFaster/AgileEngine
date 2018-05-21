@@ -1,9 +1,11 @@
 package com.agileengine.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-public class Transaction {
+public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +18,16 @@ public class Transaction {
     @Column(nullable = false)
     private Long amount;
 
+    @Column(nullable = false)
+    private String hash;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date created;
+
     @ManyToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Account account;
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id")
+    private Wallet wallet;
 
     public Transaction() {
     }
@@ -26,11 +35,15 @@ public class Transaction {
     public Transaction(
             final TransactionType type,
             final Long amount,
-            final Account account
+            final String hash,
+            final Wallet wallet,
+            final Date created
     ) {
         this.type = type;
         this.amount = amount;
-        this.account = account;
+        this.wallet = wallet;
+        this.hash = hash;
+        this.created = created;
     }
 
     public Long getId() {
@@ -57,11 +70,27 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Account getAccount() {
-        return account;
+    public Wallet getWallet() {
+        return wallet;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

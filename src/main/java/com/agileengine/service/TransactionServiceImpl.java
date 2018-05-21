@@ -1,6 +1,7 @@
 package com.agileengine.service;
 
-import com.agileengine.dto.TransactionDTO;
+import com.agileengine.dto.out.TransactionDTO;
+import com.agileengine.exception.ResourceNotFoundException;
 import com.agileengine.model.Transaction;
 import com.agileengine.repository.TransactionRepository;
 import org.modelmapper.ModelMapper;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,5 +33,12 @@ public class TransactionServiceImpl {
                 pageable,
                 transactions.getTotalElements()
         );
+    }
+
+    public void verifyTransaction(String hash) {
+       final Optional<Transaction> transactionOptional = transactionRepository.findByHash(hash);
+       if (!transactionOptional.isPresent()) {
+           throw new ResourceNotFoundException();
+       }
     }
 }

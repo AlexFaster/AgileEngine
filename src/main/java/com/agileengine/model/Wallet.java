@@ -1,11 +1,12 @@
 package com.agileengine.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Account {
+public class Wallet implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,14 +15,18 @@ public class Account {
     @Column(nullable = false)
     private Long money;
 
-    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+    @Version
+    @Column(nullable = false)
+    private Integer version;
+
+    @OneToMany(mappedBy = "wallet", cascade = {CascadeType.ALL})
     private Set<Transaction> transactions;
 
-    public Account() {
+    public Wallet() {
         transactions = new HashSet<>();
     }
 
-    public Account(Long money) {
+    public Wallet(Long money) {
         this();
         this.money = money;
     }
@@ -40,6 +45,14 @@ public class Account {
 
     public void setMoney(Long money) {
         this.money = money;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public Set<Transaction> getTransactions() {
