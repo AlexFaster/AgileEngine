@@ -1,12 +1,12 @@
 package com.agileengine.service;
 
-import com.agileengine.dto.out.BalanceDTO;
+import com.agileengine.model.Wallet;
 
 public interface WalletService {
 
-    BalanceDTO deposit(long walletId, long amount, String hash);
+    Wallet deposit(long walletId, long amount, String hash);
 
-    BalanceDTO withdraw(long walletId, long amount, String hash);
+    Wallet withdraw(long walletId, long amount, String hash);
 
-    BalanceDTO balance(long walletId);
+    Wallet balance(long walletId);
 }

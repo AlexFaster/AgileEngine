@@ -2,7 +2,9 @@ package com.agileengine.controller;
 
 import com.agileengine.dto.in.MoneyDTO;
 import com.agileengine.dto.out.BalanceDTO;
+import com.agileengine.model.Wallet;
 import com.agileengine.service.WalletService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,12 @@ public class WalletApi {
 
     private final WalletService walletService;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public WalletApi(final WalletService walletService) {
+    public WalletApi(final WalletService walletService, final ModelMapper modelMapper) {
         this.walletService = walletService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping(
@@ -41,7 +46,8 @@ public class WalletApi {
     ) {
         final long moneyValue = money.getAmount();
         final String hash = money.getHash();
-        return walletService.deposit(walletId, moneyValue, hash);
+        final Wallet wallet = walletService.deposit(walletId, moneyValue, hash);
+        return modelMapper.map(wallet, BalanceDTO.class);
     }
 
     @PostMapping(
@@ -63,7 +69,8 @@ public class WalletApi {
     ) {
         final long moneyValue = money.getAmount();
         final String hash = money.getHash();
-        return walletService.withdraw(walletId, moneyValue, hash);
+        final Wallet wallet = walletService.withdraw(walletId, moneyValue, hash);
+        return modelMapper.map(wallet, BalanceDTO.class);
     }
 
     @GetMapping(
@@ -77,7 +84,8 @@ public class WalletApi {
             @Min(1)
             final Long walletId
     ) {
-        return walletService.balance(walletId);
+        final Wallet wallet = walletService.balance(walletId);
+        return modelMapper.map(wallet, BalanceDTO.class);
     }
 
 

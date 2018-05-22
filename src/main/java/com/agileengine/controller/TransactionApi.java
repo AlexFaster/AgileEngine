@@ -3,16 +3,17 @@ package com.agileengine.controller;
 import com.agileengine.dto.out.TransactionDTO;
 import com.agileengine.model.Transaction;
 import com.agileengine.service.TransactionService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -20,9 +21,12 @@ public class TransactionApi {
 
     private final TransactionService transactionService;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public TransactionApi(final TransactionService transactionService) {
+    public TransactionApi(final TransactionService transactionService, final ModelMapper modelMapper) {
         this.transactionService = transactionService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping(
@@ -30,19 +34,28 @@ public class TransactionApi {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public Page<TransactionDTO> getTransactions(final Pageable pageable) {
-        return transactionService.getTransactions(pageable);
+        final Page<Transaction> transactions = transactionService.getTransactions(pageable);
+        final List<TransactionDTO> transactionsDTO = transactions.getContent()
+                .stream()
+                .map(trans -> modelMapper.map(trans, TransactionDTO.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(
+                transactionsDTO,
+                pageable,
+                transactions.getTotalElements()
+        );
     }
 
-    @GetMapping(
+    @DeleteMapping(
             path = "/v1/transactions/{hash}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Transaction verifyTransaction(
+    public void verifyTransaction(
 
             @PathVariable
             @NotBlank
             final String hash
     ) {
-        return transactionService.getTransactionBy(hash);
+        transactionService.getTransactionBy(hash);
     }
 }

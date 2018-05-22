@@ -18,7 +18,7 @@ public class Transaction implements Serializable {
     @Column(nullable = false)
     private Long amount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String hash;
 
     @Temporal(TemporalType.TIMESTAMP)

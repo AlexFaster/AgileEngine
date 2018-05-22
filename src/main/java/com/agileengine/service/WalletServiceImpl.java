@@ -9,7 +9,6 @@ import com.agileengine.model.TransactionType;
 import com.agileengine.model.Wallet;
 import com.agileengine.repository.TransactionRepository;
 import com.agileengine.repository.WalletRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,25 +20,22 @@ public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
-    private final ModelMapper modelMapper;
     private final RequestDate requestDate;
 
     @Autowired
     public WalletServiceImpl(
             final WalletRepository walletRepository,
             final TransactionRepository transactionRepository,
-            final ModelMapper modelMapper,
             final RequestDate requestDate
     ) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
-        this.modelMapper = modelMapper;
         this.requestDate = requestDate;
     }
 
     @Override
     @Transactional
-    public BalanceDTO deposit(final long walletId, final long amount, final String hash) {
+    public Wallet deposit(final long walletId, final long amount, final String hash) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must exceed zero");
         }
@@ -56,14 +52,14 @@ public class WalletServiceImpl implements WalletService {
                     requestDate.getDate()
             );
             transactionRepository.save(transaction);
-            return modelMapper.map(wallet, BalanceDTO.class);
+            return wallet;
         }
         throw new ResourceNotFoundException();
     }
 
     @Override
     @Transactional
-    public BalanceDTO withdraw(final long walletId, final long amount, final String hash) {
+    public Wallet withdraw(final long walletId, final long amount, final String hash) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must exceed zero");
         }
@@ -81,7 +77,7 @@ public class WalletServiceImpl implements WalletService {
                         requestDate.getDate()
                 );
                 transactionRepository.save(transaction);
-                return modelMapper.map(wallet, BalanceDTO.class);
+                return wallet;
             } else {
                 throw new InsufficientFundsException(wallet.getMoney(), amount);
             }
@@ -91,11 +87,10 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    public BalanceDTO balance(final long walletId) {
+    public Wallet balance(final long walletId) {
         final Optional<Wallet> walletOpt = walletRepository.findById(walletId);
         if (walletOpt.isPresent()) {
-            final Wallet wallet = walletOpt.get();
-            return modelMapper.map(wallet, BalanceDTO.class);
+            return walletOpt.get();
         }
         throw new ResourceNotFoundException();
     }
