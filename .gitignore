@@ -24,3 +24,5 @@ hs_err_pid*
 out/production
 out/test
 .idea
+.gradle
+gradle
