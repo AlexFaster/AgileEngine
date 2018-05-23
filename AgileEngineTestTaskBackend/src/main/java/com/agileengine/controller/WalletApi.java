@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(path = "/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class WalletApi {
 
     private final WalletService walletService;

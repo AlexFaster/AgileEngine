@@ -6,8 +6,6 @@ public class BalanceDTO {
 
     private Long money;
 
-    private Integer version;
-
     public Long getId() {
         return id;
     }
@@ -24,11 +22,4 @@ public class BalanceDTO {
         this.money = money;
     }
 
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
 }

@@ -3,6 +3,7 @@ package com.agileengine.service;
 import com.agileengine.config.date.RequestDate;
 import com.agileengine.dto.out.BalanceDTO;
 import com.agileengine.exception.InsufficientFundsException;
+import com.agileengine.exception.NotFoundEnum;
 import com.agileengine.exception.ResourceNotFoundException;
 import com.agileengine.model.Transaction;
 import com.agileengine.model.TransactionType;
@@ -54,7 +55,7 @@ public class WalletServiceImpl implements WalletService {
             transactionRepository.save(transaction);
             return wallet;
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(NotFoundEnum.WALLET);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class WalletServiceImpl implements WalletService {
                 throw new InsufficientFundsException(wallet.getMoney(), amount);
             }
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(NotFoundEnum.WALLET);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class WalletServiceImpl implements WalletService {
         if (walletOpt.isPresent()) {
             return walletOpt.get();
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(NotFoundEnum.WALLET);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.agileengine.service;
 
+import com.agileengine.exception.NotFoundEnum;
 import com.agileengine.exception.ResourceNotFoundException;
 import com.agileengine.model.Transaction;
 import com.agileengine.repository.TransactionRepository;
@@ -31,6 +32,6 @@ public class TransactionServiceImpl implements TransactionService {
         if (transactionOptional.isPresent()) {
             return transactionOptional.get();
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(NotFoundEnum.TRANSACTION);
     }
 }
