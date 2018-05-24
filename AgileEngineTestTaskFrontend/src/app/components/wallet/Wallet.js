@@ -45,17 +45,19 @@ class Wallet extends Component {
             alert(this.state.error)
         }
 
+        let balanceInDollars = (this.state.balance / 100).toFixed(2);
+
         return (
             <div className="wallet">
                 <h3>Wallet</h3>
                 <div className="wallet-info">
-                    <p className="money">Money: <span id="money">{this.state.balance}</span></p>
+                    <p className="money">Money: <span id="money">{balanceInDollars}$</span></p>
                 </div>
                 <div className="controls">
                     <button id="withdraw" className="btn-danger control-button"
                             onClick={this.handleWithdraw}>Withdraw
                     </button>
-                    <input type="text" id="amount" onChange={this.updateRequestedAmount}/>
+                    <input type="text" id="amount" placeholder="amount in cents!!" onChange={this.updateRequestedAmount}/>
                     <button id="deposit" className="btn-success control-button"
                             onClick={this.handleDeposit}>Deposit
                     </button>
@@ -138,11 +140,11 @@ class Wallet extends Component {
     };
 
     updateRequestedAmount = (evt) => {
-        let requestedAmount = this.state.requestedAmount;
+        let requestedAmount = evt.target.value;
         let isAmountValid = parseInt(requestedAmount, 10) && requestedAmount > 0;
         this.setState({
             inputValidation: isAmountValid,
-            requestedAmount: evt.target.value,
+            requestedAmount: requestedAmount,
             error: null
         });
     }

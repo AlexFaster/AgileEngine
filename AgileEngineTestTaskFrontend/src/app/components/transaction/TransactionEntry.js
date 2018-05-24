@@ -4,6 +4,8 @@ import React, {Component} from 'react';
 class TransactionEntry extends Component {
     render() {
         const {transaction} = this.props;
+        let amountInDollars = (transaction.amount / 100).toFixed(2);
+        let createdDate = new Date(transaction.created);
         return (
             <tr className="transaction-unit">
                 <td>
@@ -13,10 +15,10 @@ class TransactionEntry extends Component {
                     {transaction.type}
                 </td>
                 <td>
-                    {transaction.amount}
+                    {amountInDollars}$
                 </td>
                 <td>
-                    {transaction.created}
+                    {createdDate.toLocaleString()}
                 </td>
             </tr>
         )
