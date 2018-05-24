@@ -13,8 +13,16 @@ class TransactionList extends Component {
         };
     }
 
+    componentWillReceiveProps() {
+        this.doTransactionFetch();
+    }
+
     componentDidMount() {
-        fetch("http://localhost:8080/api/v1/transactions?sort=created,desc")
+        this.doTransactionFetch();
+    }
+
+    doTransactionFetch = () => {
+        fetch("http://localhost:8080/api/v1/transactions?page=0&size=100&sort=created,desc")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -31,8 +39,8 @@ class TransactionList extends Component {
                     }
 
                 }
-            )
-    }
+            ).catch(alert)
+    };
 
     render() {
         return (
@@ -48,9 +56,6 @@ class TransactionList extends Component {
                     </tr>
                     {this.state.transactions.map(transaction => (
                         <TransactionEntry transaction={transaction} key={transaction.id}/>
-                        // <li key={item.id}>
-                        //     {item.type} {item.amount}
-                        // </li>
                     ))}
                     </tbody>
                 </table>

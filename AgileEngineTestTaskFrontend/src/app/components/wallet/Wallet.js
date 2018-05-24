@@ -9,7 +9,11 @@ class Wallet extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            balance: 0
+            balance: 0,
+            transactionHash: this.generateTransactionHash(),
+            inputValidation: false,
+            buttonDisabled: false,
+            requestedAmount: null
         };
     }
 
@@ -29,18 +33,18 @@ class Wallet extends Component {
                             balance: result.money
                         });
                     }
-
                 }
-            )
+            ).catch(alert)
     }
 
     render() {
-        if (this.state.error) {
-            return <div>{this.state.error}</div>
-        }
         if (!this.state.isLoaded) {
             return <p>Loading...</p>
         }
+        if (this.state.error) {
+            alert(this.state.error)
+        }
+
         return (
             <div className="wallet">
                 <h3>Wallet</h3>
@@ -48,9 +52,13 @@ class Wallet extends Component {
                     <p className="money">Money: <span id="money">{this.state.balance}</span></p>
                 </div>
                 <div className="controls">
-                    <input type="button" id="withdraw" value="Withdraw" className="btn-danger control-button"/>
-                    <input type="text" id="amount"/>
-                    <input type="button" id="deposit" value="Deposit" className="btn-success control-button"/>
+                    <button id="withdraw" className="btn-danger control-button"
+                            onClick={this.handleWithdraw}>Withdraw
+                    </button>
+                    <input type="text" id="amount" onChange={this.updateRequestedAmount}/>
+                    <button id="deposit" className="btn-success control-button"
+                            onClick={this.handleDeposit}>Deposit
+                    </button>
                 </div>
                 <div className="note">
                     <p>For simplicity it always operates with wallet with id=1, but api is flexible enough</p>
@@ -58,6 +66,87 @@ class Wallet extends Component {
             </div>
         )
     }
+
+    doTransaction = (url, errorHandler) => {
+        if (this.state.inputValidation) {
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({amount: this.state.requestedAmount, hash: this.state.transactionHash})
+            })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if (result.error) {
+                            errorHandler(result);
+                        } else {
+                            this.setState({
+                                isLoaded: true,
+                                balance: result.money,
+                                transactionHash: this.generateTransactionHash(),
+                                buttonDisabled: false,
+                                error: null
+                            });
+                            this.props.transactionStatus();
+                        }
+                    }
+                ).catch(alert)
+        } else {
+            this.setState({
+               error: "Incorrect requested amount"
+            });
+        }
+    };
+
+    handleDeposit = () => {
+        this.doTransaction(
+            "http://localhost:8080/api/v1/wallets/1/deposit",
+            (result) => this.depositErrorHandler(result)
+        );
+    };
+
+
+    handleWithdraw = () => {
+        this.doTransaction(
+            "http://localhost:8080/api/v1/wallets/1/withdraw",
+            (result) => this.withdrawErrorHandler(result)
+        );
+    };
+
+
+    withdrawErrorHandler = (result) => {
+        this.setState({
+            isLoaded: true,
+            error: result.message,
+            buttonDisabled: false
+        });
+    };
+
+    depositErrorHandler = (result) => {
+        this.setState({
+            isLoaded: true,
+            error: result.message,
+            buttonDisabled: false
+        });
+    };
+
+    generateTransactionHash = () => {
+        return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 16);
+    };
+
+    updateRequestedAmount = (evt) => {
+        let requestedAmount = this.state.requestedAmount;
+        let isAmountValid = parseInt(requestedAmount, 10) && requestedAmount > 0;
+        this.setState({
+            inputValidation: isAmountValid,
+            requestedAmount: evt.target.value,
+            error: null
+        });
+    }
 }
+
 
 export default Wallet;
