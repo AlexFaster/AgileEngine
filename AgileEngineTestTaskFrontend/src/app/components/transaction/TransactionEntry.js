@@ -1,11 +1,9 @@
 import './Transaction.css';
-import React, {Component} from 'react';
+import React from 'react';
 
-class TransactionEntry extends Component {
-    render() {
-        const {transaction} = this.props;
-        let amountInDollars = (transaction.amount / 100).toFixed(2);
-        let createdDate = new Date(transaction.created);
+const TransactionEntry =  ({transaction}) => {
+        const amountInDollars = (transaction.amount / 100).toFixed(2);
+        const createdDate = new Date(transaction.created);
         return (
             <tr className="transaction-unit">
                 <td>
@@ -22,7 +20,6 @@ class TransactionEntry extends Component {
                 </td>
             </tr>
         )
-    }
-}
+};
 
 export default TransactionEntry

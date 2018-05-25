@@ -9,13 +9,13 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            needTransactionUpdate: true
+            requestCount: 0
         }
     }
 
     pingTransactionComponent = () => {
         this.setState({
-            needTransactionUpdate: !this.state.needTransactionUpdate
+            requestCount: this.state.requestCount + 1
         })
     };
 
@@ -28,7 +28,7 @@ class App extends Component {
                 </header>
                 <Wallet transactionStatus={this.pingTransactionComponent}/>
                 <hr/>
-                <TransactionList ping={this.state.needTransactionUpdate}/>
+                <TransactionList ping={this.state.requestCount}/>
             </div>
         );
     }
