@@ -11,4 +11,4 @@ gradle bootRun
 cd AgileEngineTestTaskFrontend
 npm start
 ```
-## Enjoy
+## Enjoy fast
